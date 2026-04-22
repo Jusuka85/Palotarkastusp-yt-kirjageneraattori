@@ -8,12 +8,8 @@ import StandardOrderSelectionModal from './StandardOrderSelectionModal';
 interface ObservationItemProps {
     observation: Observation;
     onUpdate: (updatedObservation: Observation) => void;
-    onFetchCorrectionOrder: (observation: Observation, guidance?: string) => Promise<string[] | null>;
-    onFetchSafetyObservation: (observation: Observation, guidance?: string) => Promise<string[] | null>;
-    onFetchPositiveObservation: (observation: Observation) => Promise<string[] | null>;
     onAddCorrectionOrder: (order: string) => void; // Kept for compatibility but used less
     onAddRecommendation: (recommendation: string) => void; // Kept for compatibility but used less
-    isGenerating: boolean;
     guidance?: string;
     onShowGuidance: (topic: string, initialEditMode?: boolean) => void;
     isTemporarilyOk: boolean;
@@ -104,12 +100,8 @@ const manualCategoryMapping: Record<string, string> = {
 const ObservationItem: React.FC<ObservationItemProps> = ({
     observation,
     onUpdate,
-    onFetchCorrectionOrder,
-    onFetchSafetyObservation,
-    onFetchPositiveObservation,
     onAddCorrectionOrder,
     onAddRecommendation,
-    isGenerating,
     guidance,
     onShowGuidance,
     isTemporarilyOk,
@@ -117,8 +109,6 @@ const ObservationItem: React.FC<ObservationItemProps> = ({
     onTemporarilyHide,
     categorizedCorrectionOrders
 }) => {
-    const [suggestions, setSuggestions] = useState<string[]>([]);
-    const [suggestionType, setSuggestionType] = useState<'correction' | 'recommendation' | 'ok' | null>(null);
     const [isStandardOrderModalOpen, setIsStandardOrderModalOpen] = useState(false);
 
     const handleStatusChange = (status: Observation['status']) => {
@@ -129,8 +119,6 @@ const ObservationItem: React.FC<ObservationItemProps> = ({
             // Clearing avoids confusion.
             onUpdate({ ...observation, status, correctionAction: '', recommendationAction: '' });
         }
-        setSuggestions([]);
-        setSuggestionType(null);
     };
 
     const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -143,38 +131,6 @@ const ObservationItem: React.FC<ObservationItemProps> = ({
 
     const handleRecommendationActionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         onUpdate({ ...observation, recommendationAction: e.target.value });
-    };
-
-    const handleFetchSuggestions = async () => {
-        let result: string[] | null = null;
-        setSuggestions([]);
-        if (observation.status === 'deficiency') {
-            result = await onFetchCorrectionOrder(observation, guidance);
-            setSuggestionType('correction');
-        } else if (observation.status === 'recommendation') {
-            result = await onFetchSafetyObservation(observation, guidance);
-            setSuggestionType('recommendation');
-        } else if (observation.status === 'ok') {
-            result = await onFetchPositiveObservation(observation);
-            setSuggestionType('ok');
-        }
-        if (result) {
-            setSuggestions(result);
-        }
-    };
-
-    const handleUseSuggestion = (suggestion: string) => {
-        if (suggestionType === 'correction') {
-            // Update the specific correction action field instead of adding to global list
-            onUpdate({ ...observation, correctionAction: suggestion });
-        } else if (suggestionType === 'recommendation') {
-            // Update the specific recommendation action field instead of adding to global list
-            onUpdate({ ...observation, recommendationAction: suggestion });
-        } else if (suggestionType === 'ok') {
-            onUpdate({ ...observation, description: suggestion });
-        }
-        setSuggestions([]);
-        setSuggestionType(null);
     };
 
     const handleSelectStandardOrder = (order: string) => {
@@ -337,38 +293,7 @@ const ObservationItem: React.FC<ObservationItemProps> = ({
                                 Valitse vakiomääräys
                             </button>
                         )}
-                        <button
-                            onClick={handleFetchSuggestions}
-                            disabled={isGenerating || (observation.status !== 'ok' && !observation.description)}
-                            className="px-3 py-1 text-sm bg-violet-600 text-white font-semibold rounded shadow-sm hover:bg-violet-700 disabled:bg-violet-300 disabled:cursor-not-allowed flex items-center gap-1"
-                        >
-                             {isGenerating && suggestionType === (observation.status === 'deficiency' ? 'correction' : observation.status === 'recommendation' ? 'recommendation' : 'ok') ? (
-                                <>
-                                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                Luodaan...
-                                </>
-                            ) : `Luo ehdotuksia tekoälyllä`}
-                        </button>
                     </div>
-
-                    {suggestions.length > 0 && (
-                        <div className="mt-4 p-3 border-t border-dashed border-slate-300 dark:border-slate-600">
-                            <h5 className="font-semibold mb-2 text-slate-700 dark:text-slate-300">Tekoälyn ehdotukset:</h5>
-                            <ul className="space-y-2">
-                                {suggestions.map((s, i) => (
-                                    <li key={i} className="bg-slate-100 dark:bg-slate-700/50 p-2 rounded-md flex justify-between items-start gap-2">
-                                        <p className="text-sm text-slate-800 dark:text-slate-200 flex-grow">{s}</p>
-                                        <button onClick={() => handleUseSuggestion(s)} className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 flex-shrink-0">
-                                            Käytä
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
                 </div>
             )}
              {isStandardOrderModalOpen && (

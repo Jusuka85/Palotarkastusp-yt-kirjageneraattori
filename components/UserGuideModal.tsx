@@ -28,18 +28,18 @@ const UserGuideModal: React.FC<UserGuideModalProps> = ({ isOpen, onClose }) => {
                     
                     <GuideSection title="Pikaopas: Näin teet raportin 5 vaiheessa">
                         <ol>
-                            <li><strong>Aloita:</strong> Täytä "Perustiedot" ja "Tarkastuksen kulku". Käytä "Hae kohteen tiedot" -tekoälytoimintoa apuna.</li>
-                            <li><strong>Tarkasta:</strong> Käy läpi "Tarkistuslista". Merkitse jokainen kohta joko <strong>OK</strong>, <strong>Puute</strong> tai <strong>Suositus</strong>. Kirjoita kuvaus ja hyödynnä tekoälyä tai vakiomääräyksiä.</li>
+                            <li><strong>Aloita:</strong> Täytä "Perustiedot" ja "Tarkastuksen kulku".</li>
+                            <li><strong>Tarkasta:</strong> Käy läpi "Tarkistuslista". Merkitse jokainen kohta joko <strong>OK</strong>, <strong>Puute</strong> tai <strong>Suositus</strong>. Kirjoita kuvaus ja hyödynnä vakiomääräyksiä.</li>
                             <li><strong>Viimeistele:</strong> Tarkista ja muokkaa "Korjausmääräykset" ja "Suositukset" -listoja. Täytä loput osiot ("Kuuleminen", "Liitteet").</li>
                             <li><strong>Tallenna työsi:</strong> Käytä "Tallenna nykyinen" tai "Tallenna uutena" -painikkeita. Tiedot tallentuvat selaimeesi.</li>
                             <li><strong>Vie raportti:</strong> Valitse "Lausunto"-näkymä. Sieltä voit kopioida koko raportin tekstimuodossa esimerkiksi sähköpostiin.</li>
                         </ol>
                     </GuideSection>
 
-                    <GuideSection title="1. Perustiedot ja tekoälyavustaja">
-                        <p>Syötä ensin kohteen perustiedot. Voit nopeuttaa työtä tekoälyllä:</p>
+                    <GuideSection title="1. Perustiedot">
+                        <p>Syötä ensin kohteen perustiedot:</p>
                         <ul>
-                            <li><strong>Hae kohteen tiedot:</strong> Kun olet syöttänyt kohteen nimen tai osoitteen, tämä painike etsii julkisia tietoja ja ehdottaa niitä lomakkeelle.</li>
+                            <li><strong>Kohteen nimi ja osoite:</strong> Tarkat tiedot auttavat kohteen tunnistamisessa.</li>
                             <li><strong>Tarkastajat ja Edustajat:</strong> Lisää tai poista kenttiä tarpeen mukaan. Nämä tiedot siirtyvät suoraan lopulliseen raporttiin.</li>
                         </ul>
                     </GuideSection>
@@ -48,7 +48,6 @@ const UserGuideModal: React.FC<UserGuideModalProps> = ({ isOpen, onClose }) => {
                         <p>Tämä on sovelluksen ydin. Käy läpi tarkastettavat asiat ja kirjaa havaintosi.</p>
                         <ul>
                             <li><strong>Status-painikkeet (OK, Puute, Suositus):</strong> Valitse status, jolloin tekstikenttä avautuu. Voit perua valinnan klikkaamalla samaa painiketta uudelleen.</li>
-                            <li><strong>Luo ehdotuksia tekoälyllä:</strong> Kun olet kirjoittanut kuvauksen, tämä painike antaa kolme ammattimaista, valmista lause-ehdotusta.</li>
                              <li><strong>Valitse vakiomääräys:</strong> "Puute"-statuksen yhteydessä voit valita valmiin, lakipykäliin perustuvan vakiomääräyksen. Voit hallita näitä määräyksiä "Korjausmääräykset"-osion alta löytyvästä napista.</li>
                             <li><strong>Väliaikainen OK:</strong> Jos kohta on kunnossa, mutta et halua siitä mainintaa raporttiin, käytä tätä valintaa. Kohde merkitään vihreällä, mutta se ei tule lopulliseen pöytäkirjaan.</li>
                             <li><strong>Profiilit ja listan muokkaus:</strong> Valitse valmis profiili (esim. "Kerrostalo") näyttämään vain oleelliset kohdat. "Muokkaa listaa" -painikkeella voit luoda omia profiileja eri kohdetyypeille.</li>
@@ -87,7 +86,6 @@ const UserGuideModal: React.FC<UserGuideModalProps> = ({ isOpen, onClose }) => {
                     <GuideSection title="Tärkeää: Tietosuoja ja tallennus">
                         <p><strong>Kaikki tietosi tallennetaan AINOASTAAN oman selaimesi paikalliseen muistiin.</strong> Mitään tietoja ei lähetetä ulkopuolisille palvelimille.</p>
                         <p className="font-bold">Varoitus: Jos tyhjennät selaimesi "sivustotiedot" (ei pelkkää selaushistoriaa), myös kaikki tallennetut raporttisi poistuvat pysyvästi.</p>
-                        <p>Tekoälytoiminnot lähettävät vain yksittäisen, anonymisoidun pyynnön (esim. puutteen kuvauksen) Googlelle eivätkä sisällä koko raportin dataa.</p>
                     </GuideSection>
 
                 </main>

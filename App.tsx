@@ -25,7 +25,6 @@ import { guidanceData as defaultGuidanceData } from './data/guidanceData';
 import { defaultStandardTexts } from './data/standardTexts';
 import { defaultCategorizedCorrectionOrders } from './data/categorizedCorrectionOrders';
 import { correctionOrderMappings } from './data/correctionOrderMappings';
-import * as geminiService from './services/geminiService';
 import { defaultProfiles } from './data/profiles';
 
 const getAllTopicsFromChecklist = (checklist: ChecklistCategory[]): string[] => {
@@ -135,7 +134,6 @@ const App: React.FC = () => {
   }, []);
 
   const [showStatement, setShowStatement] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
   const [isChecklistMgmtOpen, setIsChecklistMgmtOpen] = useState(false);
   const [isReportMgmtOpen, setIsReportMgmtOpen] = useState(false);
   const [isUserGuideOpen, setIsUserGuideOpen] = useState(false);
@@ -316,50 +314,7 @@ const App: React.FC = () => {
         window.open(url, '_blank', 'noopener,noreferrer');
     };
 
-  
-  const handleFetchSingleCorrectionOrder = async (observation: Observation, guidance?: string): Promise<string[] | null> => {
-    if (!observation.description || !geminiService.isAiAvailable()) return null;
-    
-    const standardOrdersForTopic = correctionOrderMappings[observation.topic] || [];
-
-    setIsGenerating(true);
-    try {
-      return await geminiService.generateSingleCorrectionOrder(observation, standardOrdersForTopic, guidance);
-    } catch (error) {
-      alert("Korjausmääräyksen luonti epäonnistui. Tarkista konsoli.");
-      return null;
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-  
-  const handleFetchSafetyObservation = async (observation: Observation, guidance?: string): Promise<string[] | null> => {
-    if (!observation.description || !geminiService.isAiAvailable()) return null;
-    setIsGenerating(true);
-    try {
-      return await geminiService.generateSafetyObservation(observation, guidance);
-    } catch (error) {
-      alert("Turvallisuushavainnon luonti epäonnistui. Tarkista konsoli.");
-      return null;
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const handleFetchPositiveObservation = async (observation: Observation): Promise<string[] | null> => {
-    if (!geminiService.isAiAvailable()) return null;
-    setIsGenerating(true);
-    try {
-      return await geminiService.generatePositiveObservation(observation);
-    } catch (error) {
-      alert("Havainnon luonti epäonnistui. Tarkista konsoli.");
-      return null;
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
- // The original code was encountering a TypeScript error "Spread types may only be created from object types"
+  // The original code was encountering a TypeScript error "Spread types may only be created from object types"
  // when initializing a Set with the result of `getAllTopicsFromChecklist`.
  // Although `getAllTopicsFromChecklist` is typed to return `string[]`, in some TypeScript configurations,
  // the iterable argument might be misinterpreted. Explicitly spreading the array (`...`)
@@ -809,12 +764,8 @@ const App: React.FC = () => {
                             key={obs.id}
                             observation={obs}
                             onUpdate={handleObservationUpdate}
-                            onFetchCorrectionOrder={handleFetchSingleCorrectionOrder}
-                            onFetchSafetyObservation={handleFetchSafetyObservation}
-                            onFetchPositiveObservation={handleFetchPositiveObservation}
                             onAddCorrectionOrder={handleAddCorrectionOrder}
                             onAddRecommendation={handleAddRecommendation}
-                            isGenerating={isGenerating}
                             guidance={guidance[obs.topic]}
                             onShowGuidance={handleShowGuidance} // Pass the updated handler
                             isTemporarilyOk={tempOkIds.has(obs.id)}
