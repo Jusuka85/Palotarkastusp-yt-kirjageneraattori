@@ -1,0 +1,6 @@
+{
+  "name": "Fire Inspection Report Generator",
+  "description": "An application to streamline the process of creating fire inspection reports, with AI-powered suggestions for corrective actions and summaries.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
